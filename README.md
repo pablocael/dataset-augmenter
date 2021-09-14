@@ -55,14 +55,23 @@ Two basic transformations are available: rotations and elastice deformations.
 
 For knowing more about those transformations see ```core.RotationDataTransformer``` and ```core.ElasticDeformDataTransformer```.
 
-- core.RotationDataTransformer:
+#### Available data transformers are:
+
+- **core.RotationDataTransformer**:
 	Applies a random rotation choosen from a random uniform interval.
 	
-- core.ElasticDeformDataTransformer:
+- **core.ElasticDeformDataTransformer**:
 	Applies an elastic deformation with configurable intensity and smoothness. The implementation was based on the following reference:
 	"Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis"
 	
-Example:
+- **core.GaussianNoiseDataTransformer**:
+	Applies gaussian noise to the dataset images using customized standard deviation.
+	
+- **core.UniformNoiseDataTransformer**:
+	Applies uniform noise to the dataset images using customized noise intensity.
+
+	
+Example 1:
 
 ```py
 from dataset_augmenter.core import DataTransformerPipeline
@@ -82,8 +91,26 @@ transformed_X, transformed_label = pipeline.sample_and_perform_transformation(10
 
 ```
 
+	
+Example 2:
 
-#### 2. Using number_generator package with augmented datasets:
+```py
+from dataset_augmenter.core import DataTransformerPipeline
+
+def load_data()
+	...
+
+original_X, original_label = load_data()
+
+pipeline = DataTransformerPipeline
+
+pipeline.add_gaussian_noise_transformer(sigma=0.08)
+
+# create 100 new examples by random sampling original data and applying gaussian noise.
+transformed_X, transformed_label = pipeline.sample_and_perform_transformation(100, original_X, original_label)
+```
+
+#### 2. Using number_generator package with augmented digits datasets:
 
 If one has number_generator package installed and want to generate number sequences or telephone numbers-like sequences using augmented datasets, its possible by augmenting a dataset, saving it and then configuring the default digits dataset to be used (see number_generator README section 2.2 to learn how to set a custom digit dataset to be used for number generation).
 
@@ -123,7 +150,7 @@ Now its possible to generate phone numbers like datasets using the augmented dig
 
 ```py
 generate-phone-numbers.py --num-images=200 --min-spacing=5 --max-spacing=10 --image-width=100 --output-path=./
-```
+```add
 
 Help
 ----------------------

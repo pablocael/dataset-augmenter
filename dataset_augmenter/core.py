@@ -11,7 +11,7 @@ class DataTransformer:
 
     def __call__(self, X: np.ndarray, Y: Iterable):
         """
-        Main data trasnform operator special method.
+        Main data transform operator, must be reimplemented by subclasses.
 
         Parameters
         ----------
@@ -22,8 +22,8 @@ class DataTransformer:
         """
         raise NotImplementedError()
 
-class ElasticDeformDataTransformer(DataTransformer):
 
+class ElasticDeformDataTransformer(DataTransformer):
 
     def __init__(self, intensity: float, sigma: float):
         """
@@ -56,8 +56,8 @@ class ElasticDeformDataTransformer(DataTransformer):
 
         return np.array(result), Y
 
-class RotationDataTransformer(DataTransformer):
 
+class RotationDataTransformer(DataTransformer):
 
     def __init__(self, min_angle, max_angle):
         """
@@ -79,7 +79,6 @@ class RotationDataTransformer(DataTransformer):
         self._min_angle = np.clip(min_angle, -179, 180)
         self._max_angle = np.clip(max_angle, -179, 180)
 
-
     def __call__(self, X, Y):
 
         assert len(X.shape) == 3, 'X data must be have format (N, height, width)'
@@ -93,6 +92,65 @@ class RotationDataTransformer(DataTransformer):
             rotation_angle = np.random.rand() * angle_range - angle_range / 2
             rotated = algorithms.rotate_image(X[i], angle=rotation_angle)
             result.append(rotated)
+
+        return np.array(result), Y
+
+
+class GaussianNoiseDataTransformer(DataTransformer):
+
+    def __init__(self, sigma: float = 0.05):
+        """
+        Construct an GaussianNoiseDataTransformer.
+
+        Parameters
+        ----------
+
+        - sigma: the standard deviation of the gaussian distribution to use (in normalized interval)
+            A sigma of 1 represents a standard deviation of 255 in uin8 space.
+        """
+
+        self._sigma = sigma
+
+    def __call__(self, X, Y):
+
+        assert len(X.shape) == 3, 'X data must be have format (N, height, width)'
+
+        shape = X.shape
+
+        result = []
+        for i in range(shape[0]):
+
+            noised = algorithms.add_gaussian_noise(X[i], sigma=self._sigma)
+            result.append(noised)
+
+        return np.array(result), Y
+
+
+class UniformNoiseDataTransformer(DataTransformer):
+
+    def __init__(self, intensity: int = 10):
+        """
+        Construct an UniformNoiseDataTransformer.
+
+        Parameters
+        ----------
+         intensity: the maximum intensity of noise to be added, must be in the interval [-255, 255]
+
+        """
+
+        self._intensity = intensity
+
+    def __call__(self, X, Y):
+
+        assert len(X.shape) == 3, 'X data must be have format (N, height, width)'
+
+        shape = X.shape
+
+        result = []
+        for i in range(shape[0]):
+
+            noised = algorithms.add_uniform_noise(X[i], intensity=self._intensity)
+            result.append(noised)
 
         return np.array(result), Y
 
@@ -166,8 +224,4 @@ class DataTransformerPipeline:
         input_labels = Y[choosen_indices]
 
         return input_images, input_labels
-
-
-
-
 

@@ -63,3 +63,52 @@ def rotate_image(image: np.ndarray, angle: float) -> np.ndarray:
 
     """
     return rotate(image, angle, reshape=False)
+
+def add_gaussian_noise(image: np.ndarray, sigma: float = 0.05) -> np.ndarray:
+
+    """
+    Add gaussian noise to a monochromatic image.
+
+    Parameters
+    ----------
+
+    image: a monochromatic (1 channel) image, format (height, width) and dtype = np.uint8
+    sigma: the standard deviation of the gaussian distribution.
+
+    This function works by changing the intensity value of each pixel by a normal distribution which mean
+    is equal to orignal pixel intensity value and standard deviation is given by sigma.
+
+    """
+    assert len(image.shape) == 2
+
+    # sample from standard 0,1 normal
+    samples = np.random.randn(*image.shape)
+
+    # convert to desired standard deviation
+    samples *= sigma
+
+    samples *= 255 # convert to [-255, 255] space
+
+    return np.uint8(np.clip(image + samples, 0, 255))
+
+def add_uniform_noise(image: np.ndarray, intensity: int) -> np.ndarray:
+
+    """
+    Add uniform noise to a monochromatic image.
+
+    Parameters
+    ----------
+
+    image: a monochromatic (1 channel) image, format (height, width) and dtype = np.uint8
+    intensity: the maximum intensity of noise to be added, must be in the interval [-255, 255]
+
+    This function adds noise sampled from a uniform distribution, centered at each pixel intensity value (mean = 0),
+    and with range (-intensity, intensity)
+
+    """
+    assert len(image.shape) == 2
+
+    # sample from standard 0,1 normal
+    samples = np.random.rand(*image.shape) * 2 * intensity
+
+    return np.uint8(np.clip(image + samples, 0, 255))
