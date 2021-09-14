@@ -166,6 +166,12 @@ class DataTransformerPipeline:
     def add_rotation_transformer(self, min_angle: float, max_angle: float):
         self._transformers.append(RotationDataTransformer(min_angle=min_angle, max_angle=max_angle))
 
+    def add_gaussian_noise_transformer(self, sigma: float = 0.05):
+        self._transformers.append(GaussianNoiseDataTransformer(sigma=sigma))
+
+    def add_uniform_noise_transformer(self, intensity: int = 10):
+        self._transformers.append(UniformNoiseDataTransformer(intensity=intensity))
+
     def perform_transformation(self, X, Y):
 
         """
