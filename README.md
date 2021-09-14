@@ -4,7 +4,7 @@
 Introduction
 ----------------------
 
-This package provides functionalities for data augmentation, such as noise and rigid and non rigid transformations.
+This package provides functionalities for data augmentation, such as noise, rigid and non-rigid transformations.
 
 Data augmentation is often useful for expanding small datasets in order to increase variance in data (and possible add bias to trained model parameters). Data augmentation can be seen as a form of regularization.
 
@@ -15,7 +15,6 @@ Installation
 ```bash
 pip3 install dataset-augmenter==0.0.1
 ```
-
 
 Dependencies
 ----------------------
@@ -160,6 +159,14 @@ Now its possible to generate phone numbers like datasets using the augmented dig
 
 ```py
 generate-phone-numbers.py --num-images=200 --min-spacing=5 --max-spacing=10 --image-width=100 --output-path=./
+```
+
+Alternativelly one can change default dataset programatically:
+
+```py
+from number_generator import set_default_dataset_filepath
+
+set_default_dataset_filepath('./mynewpath/mydataset.pickle')
 ```
 
 Help
