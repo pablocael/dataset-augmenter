@@ -109,6 +109,7 @@ def add_uniform_noise(image: np.ndarray, intensity: int) -> np.ndarray:
     assert len(image.shape) == 2
 
     # sample from standard 0,1 normal
-    samples = np.random.rand(*image.shape) * 2 * intensity
+    samples = np.random.randint(-intensity, intensity, size=image.shape)
+    noised = np.clip(image + samples, 0, 255)
 
-    return np.uint8(np.clip(image + samples, 0, 255))
+    return np.uint8(noised)
