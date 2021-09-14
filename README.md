@@ -6,7 +6,7 @@ Introduction
 
 This package provides functionalities for data augmentation, such as noise and rigid and non rigid transformations.
 
-Data augmentation is often useful for expanding small datasets in order to increase variance in data (and possible add bias to model parameters). Data augmentation can be seen as a form of regularization.
+Data augmentation is often useful for expanding small datasets in order to increase variance in data (and possible add bias to trained model parameters). Data augmentation can be seen as a form of regularization.
 
 *This package is built for python >= 3.6*
 
