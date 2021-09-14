@@ -4,7 +4,9 @@
 Introduction
 ----------------------
 
-TODO:
+This package provides functionalities for data augmentation, such as noise and rigid and non rigid transformations.
+
+Data augmentation is often useful for expanding small datasets in order to increase variance in data (and possible add bias to model parameters). Data augmentation can be seen as a form of regularization.
 
 *This package is built for python >= 3.6*
 
@@ -51,18 +53,25 @@ Usage
 
 
 ```DataTransformerPipeline``` class provides easy to use data transformation operation that can be stacked in any order to augment data.
-Two basic transformations are available: rotations and elastice deformations.
-
-For knowing more about those transformations see ```core.RotationDataTransformer``` and ```core.ElasticDeformDataTransformer```.
+Several transformations are available: uniform noise, gaussian noise, rotations and elastic deformations.
 
 #### Available data transformers are:
-
-- **core.RotationDataTransformer**:
-	Applies a random rotation choosen from a random uniform interval.
 	
 - **core.ElasticDeformDataTransformer**:
 	Applies an elastic deformation with configurable intensity and smoothness. The implementation was based on the following reference:
 	"Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis"
+	
+	This transformer deforms images by creating a smooth random displacement map, displacing image coordinates and then
+	interpolating the new coordinates to generate a smooth rendering of the final deformed image. 
+	
+	The displacement map is shown in the image below:
+	
+	![](./doc-images/elastic-distortions.pbm "Elastic Distortion Displacement Map")
+	
+	The new deformed grid coordinates (above right image) must be interpolated to render an image without gaps. There are several ways of interpolating grid coordinates (such as linear, baricentric, and others), but core.ElasticDeformDataTransformer uses spline patches interpolation.
+	
+- **core.RotationDataTransformer**:
+	Applies a random rotation choosen from a random uniform interval.
 	
 - **core.GaussianNoiseDataTransformer**:
 	Applies gaussian noise to the dataset images using customized standard deviation.
@@ -70,6 +79,7 @@ For knowing more about those transformations see ```core.RotationDataTransformer
 - **core.UniformNoiseDataTransformer**:
 	Applies uniform noise to the dataset images using customized noise intensity.
 
+#### Using the transformer pipeline:
 	
 Example 1:
 
@@ -110,9 +120,9 @@ pipeline.add_gaussian_noise_transformer(sigma=0.08)
 transformed_X, transformed_label = pipeline.sample_and_perform_transformation(100, original_X, original_label)
 ```
 
-#### 2. Using number_generator package with augmented digits datasets:
+#### 2. Using number\_generator package with augmented digits datasets:
 
-If one has number_generator package installed and want to generate number sequences or telephone numbers-like sequences using augmented datasets, its possible by augmenting a dataset, saving it and then configuring the default digits dataset to be used (see number_generator README section 2.2 to learn how to set a custom digit dataset to be used for number generation).
+If one has number\_generator package installed and want to generate number sequences or telephone numbers-like sequences using augmented datasets, its possible by augmenting a dataset, saving it and then configuring the default digits dataset to be used (see number\_generator README section 2.2 to learn how to set a custom digit dataset to be used for number generation).
 
 Generating numbers with augmented digits datasets:
 
@@ -150,7 +160,7 @@ Now its possible to generate phone numbers like datasets using the augmented dig
 
 ```py
 generate-phone-numbers.py --num-images=200 --min-spacing=5 --max-spacing=10 --image-width=100 --output-path=./
-```add
+```
 
 Help
 ----------------------
@@ -163,6 +173,7 @@ Development
 ----------------------
 
 ###  Testing:
+
 number-generator uses pytest. To run the tests, run:
 
 ```py
@@ -175,4 +186,4 @@ on the root directory.
 Future Improvement and Features
 ----------------------
 
-- Add more data transformers
+- Add more data transformers such as zoom, translation or other non rigid deformations.
