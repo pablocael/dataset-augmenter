@@ -4,6 +4,8 @@
 Introduction
 ----------------------
 
+**This is a toy project for playing around with data augmentation.**
+
 This package provides functionalities for data augmentation, such as noise, rigid and non-rigid transformations.
 
 Data augmentation is often useful for expanding small datasets in order to increase variance in data (and possible add bias to trained model parameters). Data augmentation can be seen as a form of regularization.
